@@ -1,0 +1,40 @@
+version: '3.7'
+services:
+  jmeter:
+    image: anasoid/jmeter:5.6.3-plugins
+    hostname: jmeter
+    container_name: jmeter
+    restart: no
+    networks:
+      - catalog
+    environment:
+      JMETER_JMX: performance.jmx
+      JMETER_EXIT: false
+    volumes:
+      - ./metadata.json:/jmeter/project/metadata.json
+      - ./performance.jmx:/jmeter/project/performance.jmx
+      - ./jmeter/scripts/before-test.sh:/jmeter/project/scripts/before-test.sh
+      - ./jmeter/scripts/after-test.sh:/jmeter/project/scripts/after-test.sh
+      - jmeter_project:/jmeter/project
+  jmeter-nginx:
+    image: nginx:alpine
+    hostname: nginx
+    container_name: nginx
+    restart: no
+    networks:
+      - catalog
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/includes/:/etc/nginx/includes/
+      - ./nginx/ssl/:/etc/ssl/certs/nginx/
+      - jmeter_project:/jmeter/project
+    expose:
+      - 80
+    ports:
+      - "88:80"
+networks:
+  catalog:
+    external: true
+volumes:
+  jmeter_project:
+    driver: local
