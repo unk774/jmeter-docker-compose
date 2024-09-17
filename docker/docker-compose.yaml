@@ -25,8 +25,6 @@ services:
       - catalog
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/includes/:/etc/nginx/includes/
-      - ./nginx/ssl/:/etc/ssl/certs/nginx/
       - jmeter_project:/jmeter/project
     expose:
       - 80
